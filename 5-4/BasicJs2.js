@@ -182,7 +182,7 @@ console.log(checkOddDescending([5, 3, 1]));
 
 //B1
 const key = (o) => {
-  return Object.keys(o).join(", ");
+  return Object.keys(o).join(",");
 };
 
 console.log(
@@ -193,7 +193,7 @@ console.log(
 );
 
 //B2
-const value = (o) => Object.values(o).join(", ");
+const value = (o) => Object.values(o).join(",");
 
 console.log(
   value({
@@ -203,20 +203,18 @@ console.log(
 );
 
 //B3
-const checkKey = (o, s) => Object.keys(o).includes(s);
+const user =  {
+  name: "a",
+  age: 12,
+},
+const checkKey = (s) => Object.keys(user).includes(s);
 
 console.log(
-  checkKey(
-    {
-      name: "a",
-      age: 12,
-    },
-    "name"
-  )
+  checkKey("name")
 );
 
 //B4
-const checkLength = (o, s) => Object.keys(o).length;
+const checkLength = (o) => Object.keys(o).length;
 
 console.log(
   checkLength({
