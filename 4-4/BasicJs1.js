@@ -83,10 +83,10 @@ console.log(checkReverse("Race car"));
 
 //B8
 const checkUpperCase = (s) => {
-  return s.toLowerCase() !== s;
+  return s.toUpperCase() === s;
 };
 
-console.log(checkUpperCase("Abc"));
+console.log(checkUpperCase("ABCd"));
 
 //B1
 const volumeSphere = (a) => {
@@ -171,15 +171,15 @@ const smallestNumber = (a) => {
       return Number(val);
     });
 
-  arr
-    .sort((a, b) => a - b)
-    .map((val) => {
-      return String(val);
-    });
+  arr.sort((a, b) => a - b);
+  const arr2 = arr.filter((val) => val !== 0);
+  let result = arr2[0] * Math.pow(10, arr.length - arr2.length);
 
-  const s = arr.reduce((acc, val) => (acc += val), "");
+  for (let i = 1; i < arr2.length; i++) {
+    result = result * 10 + arr2[i];
+  }
 
-  return Number(s);
+  return result;
 };
 
-console.log(smallestNumber(53751));
+console.log(smallestNumber(5370001));
