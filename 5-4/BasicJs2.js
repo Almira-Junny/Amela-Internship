@@ -160,25 +160,19 @@ console.log(subString("dog"));
 
 //B12
 const checkAscending = (arr) => {
-  const temp = [...arr];
-  return arr.sort((a, b) => a - b).join("") === temp.join("");
+  return arr.every((el, i) => el < arr[i + 1] || i === arr.length - 1);
 };
 
-console.log(checkAscending([1, 3, 2]));
+console.log(checkAscending([1, 1, 2, 3]));
 
 //B13
 const checkOddDescending = (arr) => {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] % 2 === 0) {
-      return false;
-    }
-  }
-
-  const temp = [...arr];
-  return arr.sort((a, b) => b - a).join("") === temp.join("");
+  return arr.every(
+    (el, i) => (el > arr[i + 1] && el % 2 === 1) || i === arr.length - 1
+  );
 };
 
-console.log(checkOddDescending([5, 3, 1]));
+console.log(checkOddDescending([5, 3, 1, 1]));
 
 //B1
 const key = (o) => {
@@ -203,15 +197,14 @@ console.log(
 );
 
 //B3
-const user =  {
+const user = {
   name: "a",
   age: 12,
-},
+};
+
 const checkKey = (s) => Object.keys(user).includes(s);
 
-console.log(
-  checkKey("name")
-);
+console.log(checkKey("name"));
 
 //B4
 const checkLength = (o) => Object.keys(o).length;
