@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { promisify } = require("util");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 const signToken = (id) =>
   jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -10,17 +12,17 @@ const signToken = (id) =>
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user.id);
 
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-    ),
-    //For https
-    secure: true,
-    //Prevent browser access or modify cookie
-    httpOnly: true,
-  };
+  // const cookieOptions = {
+  //   expires: new Date(
+  //     Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+  //   ),
+  //   //For https
+  //   secure: true,
+  //   //Prevent browser access or modify cookie
+  //   httpOnly: true,
+  // };
 
-  res.cookie("jwt", token, cookieOptions);
+  // res.cookie("jwt", token, cookieOptions);
 
   //Not send encrypted pass for user
   user.password = undefined;
@@ -32,7 +34,7 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-exports.signup = async (req, res, next) => {
+exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -41,34 +43,28 @@ exports.signup = async (req, res, next) => {
   });
 
   createSendToken(newUser, 201, res);
-};
+});
 
-exports.login = async (req, res, next) => {
+exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   //Check if email and password exist
   if (!email || !password) {
-    return res.statusCode(400).json({
-      status: "error",
-      message: "Vui lòng nhập email và mật khẩu",
-    });
+    return next(new AppError("Vui lòng nhập email và mật khẩu", 400));
   }
 
   //Check if user exist and password is correct
   const user = await User.findOne({ email }).select("+password");
 
   if (!user || !(await user.correctPassword(password))) {
-    return res.statusCode(401).json({
-      status: "error",
-      message: "Email hoặc mật khẩu không chính xác",
-    });
+    return next(new AppError("Email hoặc mật khẩu không chính xác", 401));
   }
 
   //If ok, return success
   createSendToken(user, 200, res);
-};
+});
 
-exports.protect = async (req, res, next) => {
+exports.protect = catchAsync(async (req, res, next) => {
   //Getting token and check if it's here
   let token;
   if (
@@ -81,10 +77,7 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return res.statusCode(401).json({
-      status: "error",
-      message: "Vui lòng đăng nhập trước",
-    });
+    return next(new AppError("Vui lòng đăng nhập trước", 401));
   }
 
   //Verify token
@@ -103,6 +96,5 @@ exports.protect = async (req, res, next) => {
 
   //Grant access
   req.user = user;
-  res.locals.user = user;
   next();
-};
+});

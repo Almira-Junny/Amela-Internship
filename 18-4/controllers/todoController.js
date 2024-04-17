@@ -1,8 +1,14 @@
 const TODO = require("../models/todoModel");
 const APIFeatures = require("../utils/apiFeatures");
+const catchAsync = require("../utils/catchAsync");
 
-exports.getAllTodo = async (req, res, next) => {
-  const features = new APIFeatures(TODO.find(), req.query)
+exports.getAllTodo = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(
+    TODO.find({
+      user: req.user.id,
+    }),
+    req.query
+  )
     .filter()
     .sort()
     .limitFields()
@@ -15,18 +21,21 @@ exports.getAllTodo = async (req, res, next) => {
     length: data.length,
     data,
   });
-};
+});
 
-exports.createTodo = async (req, res, next) => {
-  const data = await TODO.create(req.body);
+exports.createTodo = catchAsync(async (req, res, next) => {
+  const data = await TODO.create({
+    ...req.body,
+    user: req.user.id,
+  });
 
   res.status(201).json({
     status: "success",
     data,
   });
-};
+});
 
-exports.updateTodo = async (req, res, next) => {
+exports.updateTodo = catchAsync(async (req, res, next) => {
   const data = await TODO.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -43,9 +52,9 @@ exports.updateTodo = async (req, res, next) => {
     status: "success",
     data,
   });
-};
+});
 
-exports.deleteTodo = async (req, res, next) => {
+exports.deleteTodo = catchAsync(async (req, res, next) => {
   const data = await TODO.findByIdAndDelete(req.params.id);
 
   if (!data) {
@@ -55,4 +64,4 @@ exports.deleteTodo = async (req, res, next) => {
   res.status(200).json({
     status: "success",
   });
-};
+});

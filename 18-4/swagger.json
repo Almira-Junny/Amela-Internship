@@ -1,0 +1,201 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Express JWT Auth",
+    "description": "Simple JWT Authentication Services on Express",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Authentication",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "Todo",
+      "description": "Todo"
+    }
+  ],
+  "paths": {
+    "/users/signup": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Create user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthUserRegisterDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Logs user into the system",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthUserLoginDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/todos": {
+      "get": {
+        "tags": ["Todo"],
+        "summary": "See all todo",
+        "responses": {},
+        "security": [
+          {
+            "bearerAccessToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Todo"],
+        "summary": "Create todo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {},
+        "security": [
+          {
+            "bearerAccessToken": []
+          }
+        ]
+      }
+    },
+    "/todos/{id}": {
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "tags": ["Todo"],
+        "summary": "Update todo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {},
+        "security": [
+          {
+            "bearerAccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "tags": ["Todo"],
+        "summary": "Delete todo",
+        "responses": {},
+        "security": [
+          {
+            "bearerAccessToken": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateTodoDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "example": "Title" },
+          "date": { "type": "string", "example": "2024/4/23" }
+        }
+      },
+      "AuthUserLoginDto": {
+        "required": ["email", "password"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "thanhoangdang01@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345678"
+          }
+        }
+      },
+      "AuthUserRegisterDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuthUserLoginDto"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Dang"
+              },
+              "passwordConfirm": {
+                "type": "string",
+                "example": "12345678"
+              }
+            },
+            "required": ["name", "passwordConfirm"]
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearerAccessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Use the access token returned by login (used for /me endpoint)"
+      }
+    }
+  }
+}
