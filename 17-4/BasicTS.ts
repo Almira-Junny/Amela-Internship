@@ -1,13 +1,11 @@
 //B1
 const currentDate = (s: string): string => {
   const date = new Date();
-  return (
-    String(date.getDate()) +
-    s +
-    String(date.getMonth() + 1) +
-    s +
-    String(date.getFullYear())
-  );
+  const month =
+    date.getMonth() < 9
+      ? "0" + String(date.getMonth() + 1)
+      : String(date.getMonth() + 1);
+  return String(date.getDate()) + s + month + s + String(date.getFullYear());
 };
 
 console.log(currentDate("/"));
@@ -41,7 +39,7 @@ const countDay = (day: Date): number => {
       new Date(day).getMonth(),
       new Date(day).getDate()
     ) -
-      Date.UTC(new Date(day).getFullYear(), 0, 0)) /
+      Date.UTC(new Date(day).getFullYear(), 1, 0)) /
     24 /
     60 /
     60 /
@@ -49,7 +47,7 @@ const countDay = (day: Date): number => {
   );
 };
 
-console.log(countDay(new Date(2024, 3, 8)));
+console.log(countDay(new Date(2024, 4, 17)));
 
 //B6
 const calculateAge = (day: Date): number => {
@@ -59,11 +57,11 @@ const calculateAge = (day: Date): number => {
   return today.getMonth() > birthday.getMonth() ||
     (today.getMonth() === birthday.getMonth() &&
       today.getDate() >= birthday.getDate())
-    ? today.getFullYear() - birthday.getFullYear()
-    : today.getFullYear() - birthday.getFullYear() - 1;
+    ? today.getFullYear() - birthday.getFullYear() + 1
+    : today.getFullYear() - birthday.getFullYear();
 };
 
-console.log(calculateAge(new Date(2001, 10, 4)));
+console.log(calculateAge(new Date(2024, 3, 2)));
 
 //B7
 const startOfWeek = (day: Date): string => {
